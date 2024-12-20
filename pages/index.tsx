@@ -1,24 +1,6 @@
-import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
-import React, { useEffect, useState } from "react";
-import { GetResumeContent, GetResumeContent2 } from "@/utils/resume";
-import { TextContent, TextItem } from "pdfjs-dist/types/src/display/api";
-import {
-	GenerateContentResult,
-	GoogleGenerativeAI,
-} from "@google/generative-ai";
-import { motion } from "motion/react";
-import {
-	formatEmail,
-	formatItalic,
-	formatLinks,
-	formatMarked,
-	formatPhoneNumber,
-	formatResponseBolding,
-	formatResponseWithLists,
-	formatSpacings,
-} from "@/utils/Formattings";
-import { AskQuestion } from "@/utils/AI";
+import React from "react";
+import { AnimatePresence, motion } from "motion/react";
 import TirthAI from "@/components/TirthAI";
 import SampleQuestions from "@/components/SampleQuestions";
 import { useAI } from "@/context/Context";
@@ -50,7 +32,37 @@ export default function Home() {
 					}}
 					id="ChatSection"
 				>
-					{history.length === 0 && !isGenerating && <TirthAI />}
+					<AnimatePresence>
+						{history.length === 0 && !isGenerating && (
+							<motion.div
+								className="w-full h-full flex flex-col items-center justify-start pt-10 gap-4"
+								initial={{
+									opacity: 0,
+									y: 100,
+								}}
+								animate={{
+									opacity: 1,
+									y: 0,
+									transition: {
+										duration: 0.5,
+										delay: 0.5,
+									},
+								}}
+								transition={{
+									duration: 0.5,
+								}}
+								exit={{
+									opacity: 0,
+									y: -100,
+									transition: {
+										duration: 0.5,
+									},
+								}}
+							>
+								<TirthAI />
+							</motion.div>
+						)}
+					</AnimatePresence>
 					{history.length === 0 && !isGenerating && (
 						<SampleQuestions setIsGenerating={setIsGenerating} />
 					)}
@@ -80,16 +92,46 @@ export default function Home() {
 											duration: 0.5,
 										}}
 									>
-										{message.role === "user" && (
-											<UserBox
-												question={message.parts[0].text}
-											/>
-										)}
-										{message.role === "model" && (
-											<ModelBox
-												response={message.parts[0].text}
-											/>
-										)}
+										<AnimatePresence>
+											{message.role === "user" && (
+												<motion.div
+													key={index}
+													className="w-full"
+													initial={{
+														opacity: 0,
+														y: 100,
+													}}
+													animate={{
+														opacity: 1,
+														y: 0,
+														transition: {
+															duration: 0.5,
+															delay:
+																index == 0
+																	? 0.5
+																	: 0,
+														},
+													}}
+													transition={{
+														duration: 0.5,
+													}}
+												>
+													<UserBox
+														question={
+															message.parts[0]
+																.text
+														}
+													/>
+												</motion.div>
+											)}
+											{message.role === "model" && (
+												<ModelBox
+													response={
+														message.parts[0].text
+													}
+												/>
+											)}
+										</AnimatePresence>
 									</motion.div>
 							  ))
 							: ""}

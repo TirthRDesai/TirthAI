@@ -37,13 +37,18 @@ export async function GetResumeContent() {
 
 export function GetResumeContent2() {
 	return `Tirth Desai  
-			Resume Link: [https://drive.google.com/file/d/1O2w5BliBh68V9nz7sBvMqcvkU14wcZfP/view?usp=sharing](Resume)
-			Github Link: [https://github.com/TirthRDesai](Github)
-            LinkedIn Link: [https://linkedin.com/in/tirthrdesai](LinkedIn)
-            Portfolio Link: [https://portfolio-c1r9f5yor-tirth-desais-projects.vercel.app/](Portfolio)
-            Contact Number: [tel:+17169948109]((716) 994-8109)
-            Primary Email: [mailto:tirthrdesai05@gmail.com](tirthrdesai05@gmail.com)
-            Student Email: [mailto:tirthrdesai05@gmail.com](tirthdes@buffalo.edu)
+
+		**Header**
+			**Links**
+			1. Resume Link: 'https://drive.google.com/file/d/1O2w5BliBh68V9nz7sBvMqcvkU14wcZfP/view?usp=sharing'
+			2. Github Link: https://github.com/TirthRDesai'
+            3. Portfolio Link: https://portfolio-c1r9f5yor-tirth-desais-projects.vercel.app/'
+
+			**Contact Information**
+			1. LinkedIn Link: https://linkedin.com/in/tirthrdesai'
+            2. Contact Number: +17169948109
+            3. Primary Email: 'tirthrdesai05@gmail.com'
+            4. Student Email: 'tirthrdesai05@gmail.com'
 
 ---
 

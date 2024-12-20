@@ -70,7 +70,7 @@
 }
 
 .wrapper {
-	background-color: transparent;
+	/* background-color: transparent; */
 	width: 100%;
 	overflow: visible;
 }

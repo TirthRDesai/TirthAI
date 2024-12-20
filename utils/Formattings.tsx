@@ -1,7 +1,8 @@
 import DOMPurify from "dompurify";
 import { renderToString } from "react-dom/server";
-import { FaExternalLinkAlt } from "react-icons/fa";
+import { FaExternalLinkAlt, FaPhoneAlt } from "react-icons/fa";
 import { marked } from "marked";
+import { MdEmail } from "react-icons/md";
 
 const formatSpacings = (response: string) => {
 	let output = response
@@ -12,33 +13,52 @@ const formatSpacings = (response: string) => {
 };
 
 const formatLinks = (response: string) => {
-	const regex = /\[([^\]]+)\]\((https?:\/\/[^\s]+)\)/gm;
-
-	return response.replace(regex, (match, text, url) => {
-		const iconHtml = renderToString(
-			<FaExternalLinkAlt
-				className="inline ml-0 w-fit h-fit"
-				size={12}
-				fontSize={12}
-			/>
-		);
-		return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="link-text">${text.trim()} ${iconHtml}</a>`;
-	});
+	return response.replace(
+		/\[(https?:\/\/[^\s]+)\]\(([^\]]+)\)/gm,
+		(match, url, linkText1) => {
+			const iconHtml = renderToString(
+				<FaExternalLinkAlt
+					className="inline ml-0 w-fit h-fit"
+					size={12}
+					fontSize={12}
+				/>
+			);
+			return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="link-text">${linkText1} ${iconHtml}</a>`;
+		}
+	);
 };
 
 const formatPhoneNumber = (response: string) => {
-	const regex = /\[tel:(\d+)\]\((\d+)\)/gm;
+	let formattedWithPhoneNumbers = response.replace(
+		/\[tel:([^\]]+)\]\(([^)]+)\)/g, // Improved regex
+		(match, url, linkText) => {
+			const iconHtml = renderToString(
+				<FaPhoneAlt
+					className="inline ml-2 w-fit h-fit"
+					size={12}
+					fontSize={12}
+				/>
+			);
+			return `<a href=${url} class="link-text"> ${iconHtml} (716) 994-8109</a>`;
+		}
+	);
 
-	return response.replace(regex, (match, text, url) => {
-		return `<a href="tel:${url}" class="link-text">${text.trim()}</a>`;
-	});
+	return formattedWithPhoneNumbers;
 };
 
 const formatEmail = (response: string) => {
 	const regex = /\[mailto:([^\]]+)\]\(([^)]+)\)/gm;
 
 	return response.replace(regex, (match, text, url) => {
-		return `<a href="mailto:${url}" class="link-text">${text.trim()}</a>`;
+		console.log(text, url);
+		const iconHtml = renderToString(
+			<MdEmail
+				className="inline ml-2 w-fit h-fit"
+				size={12}
+				fontSize={12}
+			/>
+		);
+		return `<a href="mailto:${url}" class="link-text"> ${iconHtml}${text.trim()}</a>`;
 	});
 };
 

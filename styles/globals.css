@@ -68,13 +68,13 @@ ul li {
 }
 
 .scrollbar::-webkit-scrollbar {
-	width: 10px;
+	width: 0px;
 	background-color: transparent;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
 	background-color: #888;
-	border-radius: 6px;
+	border-radius: 0px;
 	cursor: pointer;
 }
 

@@ -8,7 +8,7 @@ function TirthAI() {
 		<motion.div
 			className={
 				styles.wrapper +
-				" md:flex md:flex-row md:justify-center md:items-center md:h-[200px] mt-10"
+				" md:flex md:flex-row md:justify-center md:items-center md:min-h-[200px] mt-10"
 			}
 			initial={{
 				opacity: 0,
@@ -17,6 +17,18 @@ function TirthAI() {
 			animate={{
 				opacity: 1,
 				y: 0,
+				transition: {
+					duration: 1,
+					ease: "anticipate",
+					type: "spring",
+					stiffness: 200,
+					damping: 20,
+					bounce: 0.5,
+				},
+			}}
+			exit={{
+				opacity: 0,
+				y: -60,
 				transition: {
 					duration: 1,
 					ease: "anticipate",

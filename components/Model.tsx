@@ -17,10 +17,10 @@ const ModelBox = ({ response }: { response: string }) => {
 		formattedResponse = Formattings.formatItalic(formattedResponse);
 		formattedResponse =
 			Formattings.formatResponseWithLists(formattedResponse);
+		// formattedResponse = await Formattings.formatMarked(formattedResponse);
 		formattedResponse = Formattings.formatLinks(formattedResponse);
 		formattedResponse = Formattings.formatPhoneNumber(formattedResponse);
 		formattedResponse = Formattings.formatEmail(formattedResponse);
-		formattedResponse = await Formattings.formatMarked(formattedResponse);
 		const finalResponse = `<div>` + formattedResponse + `</div>`;
 		setFormattedResponse(finalResponse);
 	};
