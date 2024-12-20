@@ -19,11 +19,15 @@ export default function Document() {
 				/>
 				<meta
 					name="author"
-					content="Tirth Patel"
+					content="Tirth Desai"
 				/>
 				<meta
 					name="viewport"
 					content="width=device-width, initial-scale=1.0"
+				/>
+				<meta
+					name="google-site-verification"
+					content="kszQkDx1MaBpLfiTQZAFtR7z_q2_0anq6vtCfdbBe1M"
 				/>
 			</Head>
 			<body className="antialiased">
