@@ -1,11 +1,12 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import React from "react";
+import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import TirthAI from "@/components/TirthAI";
 import SampleQuestions from "@/components/SampleQuestions";
 import { useAI } from "@/context/Context";
 import UserBox from "@/components/User";
 import ModelBox from "@/components/Model";
+import TirthAISmall from "@/components/TirthAISmall";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -20,15 +21,24 @@ const geistMono = Geist_Mono({
 export default function Home() {
 	const { isGenerating, history, setQuestion, setIsGenerating } = useAI();
 
+	useEffect(() => {
+		const chatSection = document.getElementById("ChatSection");
+		if (chatSection) {
+			setTimeout(() => {
+				chatSection.scrollTop = chatSection.scrollHeight;
+			}, 1000);
+		}
+	}, [history]);
+
 	return (
 		<motion.div className="w-screen h-svh bg-[#1c1c1c] overflow-hidden">
 			<motion.div className="flex flex-col items-center justify-center h-full py-2 overflow-hidden w-full">
 				<motion.section
-					className="flex flex-col items-start justify-start gap-9 w-full px-4 lg:px-20 md:px-10 md:w-[85%]
-                 lg:w-4/5 flex-1 text-center   scrollbar overflow-x-hidden"
+					className="flex flex-col items-start justify-start gap-9 w-full px-4 lg:px-20 md:px-10 md:w-[85%] lg:w-4/5 flex-1 text-center scrollbar overflow-x-hidden"
 					style={{
 						fontFamily: geistMono.style.fontFamily,
 						overflowY: history.length > 0 ? "scroll" : "hidden",
+						scrollBehavior: "smooth",
 					}}
 					id="ChatSection"
 				>
@@ -66,7 +76,30 @@ export default function Home() {
 					{history.length === 0 && !isGenerating && (
 						<SampleQuestions setIsGenerating={setIsGenerating} />
 					)}
-					<motion.div className="w-full h-full flex flex-col items-center justify-start pt-10 gap-4">
+					<motion.div className="w-full h-full flex flex-col items-center justify-start gap-4">
+						<AnimatePresence>
+							{history.length > 0 && (
+								<motion.div
+									className="w-full h-fit flex items-center justify-center py-4"
+									initial={{
+										y: 100,
+
+										opacity: 0,
+									}}
+									animate={{
+										y: 0,
+										opacity: 1,
+										transition: {
+											duration: 0.5,
+											delay: 0.5,
+										},
+									}}
+								>
+									<TirthAISmall />
+								</motion.div>
+							)}
+						</AnimatePresence>
+
 						{history.length > 0
 							? history.map((message, index) => (
 									<motion.div
@@ -96,7 +129,7 @@ export default function Home() {
 											{message.role === "user" && (
 												<motion.div
 													key={index}
-													className="w-full"
+													className="w-full "
 													initial={{
 														opacity: 0,
 														y: 100,
@@ -108,7 +141,7 @@ export default function Home() {
 															duration: 0.5,
 															delay:
 																index == 0
-																	? 0.5
+																	? 1
 																	: 0,
 														},
 													}}
@@ -125,11 +158,36 @@ export default function Home() {
 												</motion.div>
 											)}
 											{message.role === "model" && (
-												<ModelBox
-													response={
-														message.parts[0].text
-													}
-												/>
+												<motion.div
+													key={index}
+													className="w-full"
+													initial={{
+														opacity: 0,
+														y: 100,
+													}}
+													animate={{
+														opacity: 1,
+														y: 0,
+														transition: {
+															duration: 0.5,
+															delay:
+																index == 1
+																	? 1
+																	: 0,
+														},
+													}}
+													transition={{
+														duration: 0.5,
+													}}
+												>
+													<ModelBox
+														response={
+															message.parts[0]
+																.text
+														}
+														key={index}
+													/>
+												</motion.div>
 											)}
 										</AnimatePresence>
 									</motion.div>
