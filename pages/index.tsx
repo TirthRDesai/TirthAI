@@ -1,114 +1,160 @@
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
+import React, { useEffect, useState } from "react";
+import { GetResumeContent, GetResumeContent2 } from "@/utils/resume";
+import { TextContent, TextItem } from "pdfjs-dist/types/src/display/api";
+import {
+	GenerateContentResult,
+	GoogleGenerativeAI,
+} from "@google/generative-ai";
+import { motion } from "motion/react";
+import {
+	formatEmail,
+	formatItalic,
+	formatLinks,
+	formatMarked,
+	formatPhoneNumber,
+	formatResponseBolding,
+	formatResponseWithLists,
+	formatSpacings,
+} from "@/utils/Formattings";
+import { AskQuestion } from "@/utils/AI";
+import TirthAI from "@/components/TirthAI";
+import SampleQuestions from "@/components/SampleQuestions";
+import { useAI } from "@/context/Context";
+import UserBox from "@/components/User";
+import ModelBox from "@/components/Model";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+	variable: "--font-geist-sans",
+	subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+	variable: "--font-geist-mono",
+	subsets: ["latin"],
 });
 
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+	const { isGenerating, history, setQuestion, setIsGenerating } = useAI();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+	return (
+		<motion.div className="w-screen h-svh bg-[#1c1c1c] overflow-hidden">
+			<motion.div className="flex flex-col items-center justify-center h-full py-2 overflow-hidden w-full">
+				<motion.section
+					className="flex flex-col items-start justify-start gap-9 w-full px-4 lg:px-20 md:px-10 md:w-[85%]
+                 lg:w-4/5 flex-1 text-center   scrollbar overflow-x-hidden"
+					style={{
+						fontFamily: geistMono.style.fontFamily,
+						overflowY: history.length > 0 ? "scroll" : "hidden",
+					}}
+					id="ChatSection"
+				>
+					{history.length === 0 && !isGenerating && <TirthAI />}
+					{history.length === 0 && !isGenerating && (
+						<SampleQuestions setIsGenerating={setIsGenerating} />
+					)}
+					<motion.div className="w-full h-full flex flex-col items-center justify-start pt-10 gap-4">
+						{history.length > 0
+							? history.map((message, index) => (
+									<motion.div
+										key={message.parts[0].text + index}
+										style={{
+											whiteSpace: "pre-wrap",
+											textAlign: "left",
+											fontSize: "0.9rem",
+										}}
+										className="text-white/60 w-full"
+										initial={{
+											opacity: 0,
+											y: 100,
+										}}
+										animate={{
+											opacity: 1,
+											y: 0,
+											transition: {
+												duration: 0.5,
+											},
+										}}
+										transition={{
+											duration: 0.5,
+										}}
+									>
+										{message.role === "user" && (
+											<UserBox
+												question={message.parts[0].text}
+											/>
+										)}
+										{message.role === "model" && (
+											<ModelBox
+												response={message.parts[0].text}
+											/>
+										)}
+									</motion.div>
+							  ))
+							: ""}
+					</motion.div>
+				</motion.section>
+				<motion.section className="w-full h-fit flex flex-row items-center justify-center relative">
+					<motion.input
+						type="text"
+						placeholder="Ask me anything..."
+						id="QuestionInput"
+						onKeyDown={(e) => {
+							if (e.key === "Enter") {
+								setQuestion(e.currentTarget.value);
+								e.currentTarget.value = "";
+							}
+						}}
+						style={{
+							fontFamily: geistSans.style.fontFamily,
+							fontSize: "0.9rem",
+						}}
+						className="w-full md-w-4/5 lg:w-3/4 text-white/90 text-left px-4 h-12 bg-transparent rounded-lg m-4 text-md border-0 border-b-2 border-blue-700 shadow-sm shadow-blue-600 ring-0 outline-none "
+						initial={{
+							y: 100,
+						}}
+						animate={{
+							y: 0,
+							transition: {
+								duration: 0.3,
+								delay: 5.5,
+							},
+						}}
+						transition={{
+							duration: 0.5,
+						}}
+					/>
+					<motion.button
+						className="hover:underline absolute top-7 right-8 lg:right-[calc(7.5%+5rem)] text-white/90 text-md"
+						style={{ x: 0 }}
+						initial={{
+							x: 20,
+							opacity: 0,
+						}}
+						animate={{
+							x: 0,
+							opacity: 1,
+							transition: {
+								duration: 0.3,
+								delay: 5.7,
+							},
+						}}
+						transition={{
+							duration: 0.5,
+						}}
+						onClick={(e) => {
+							const question = document.getElementById(
+								"QuestionInput"
+							) as HTMLInputElement;
+							setQuestion(question.value);
+							question.value = "";
+						}}
+					>
+						Ask
+					</motion.button>
+				</motion.section>
+			</motion.div>
+		</motion.div>
+	);
 }

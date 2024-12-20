@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Croissant+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Gelasio&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&display=swap");
+
+.svg {
+	/* font-family: "Croissant One", sans-serif; */
+	width: 100%;
+	height: 100%;
+	/* font-family: "Gelasio", sans-serif; */
+	font-family: "Sedgwick Ave Display", sans-serif;
+}
+
+.svg .text {
+	animation: stroke 3s forwards ease-in-out, bright 1.5s infinite ease-in-out;
+	stroke-width: 2;
+	stroke: #2e1ed8;
+	/* font-size: 132px; */
+	text-shadow: 1px 1px 2px rgb(20, 20, 255), 0 0 0.2em blue, 0 0 0.2em blue;
+}
+
+.svg .text::selection {
+	background-color: transparent;
+}
+
+@keyframes bright {
+	0% {
+		filter: drop-shadow(0 0 0.2em blue) brightness(1);
+	}
+	50% {
+		filter: drop-shadow(0 0 0.3em blue) brightness(1.2);
+	}
+	100% {
+		filter: drop-shadow(0 0 0.2em blue) brightness(1);
+	}
+}
+/* 
+@keyframes glow {
+	0% {
+		text-shadow: 1px 1px 2px blue, 0 0 0.2em blue, 0 0 0.3em blue;
+	}
+	100% {
+		text-shadow: 1px 1px 2px blue, 0 0 0.5em blue, 0 0 0.5em blue;
+	}
+} */
+
+@keyframes stroke {
+	0% {
+		fill: rgba(0, 0, 0, 0);
+		stroke: rgba(46, 30, 216, 1);
+		stroke-dashoffset: 25%;
+		stroke-dasharray: 0 50%;
+		stroke-width: 2;
+	}
+	70% {
+		fill: rgba(0, 0, 0, 0);
+		stroke: rgba(46, 30, 216, 1);
+	}
+	80% {
+		fill: rgba(0, 0, 0, 0);
+		stroke: rgba(46, 30, 216, 1);
+		stroke-width: 3;
+	}
+	100% {
+		fill: rgba(0, 0, 225, 0.4);
+		stroke: rgba(255, 255, 255, 0.5);
+		stroke-dashoffset: -25%;
+		stroke-dasharray: 50% 0;
+		stroke-width: 3;
+	}
+}
+
+.wrapper {
+	background-color: transparent;
+	width: 100%;
+	overflow: visible;
+}
